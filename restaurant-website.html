@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Delicious Bites - 3D Restaurant</title>
+  <style>
+    /* Reset & base */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    html, body {
+      height: 100%;
+      background: #fff8f0;
+      color: #333;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      perspective: 1200px;
+      perspective-origin: center center;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    ul {
+      list-style: none;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      user-select: none;
+      pointer-events: none;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      transition: transform 0.3s ease;
+      will-change: transform;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+
+    /* Navbar */
+    header {
+      background: #d94f4f;
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 60px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: 1.5px;
+      user-select: none;
+      text-shadow:
+        0 0 5px rgba(255 255 255 / 0.5),
+        0 0 7px rgba(0 0 0 / 0.15);
+    }
+    nav ul {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    nav ul li a {
+      font-weight: 600;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+      text-shadow: 1px 1px 2px rgba(0 0 0 / 0.25);
+      user-select: none;
+    }
+    nav ul li a:hover,
+    nav ul li a:focus {
+      color: #ffe6e6;
+      outline: none;
+      text-shadow: 1px 1px 8px #fff4f4;
+    }
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+      background: none;
+      border: none;
+      transform-style: preserve-3d;
+    }
+    .menu-toggle span {
+      width: 25px;
+      height: 3px;
+      background: #fff;
+      border-radius: 2px;
+      display: block;
+      will-change: transform;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+      padding: 0 1rem;
+      overflow: hidden;
+      user-select: none;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      perspective: 1000px;
+    }
+    .hero .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+      filter: brightness(0.7);
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.3s ease;
+      backface-visibility: hidden;
+      z-index: 0;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+      user-select: text;
+    }
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+      transform-style: preserve-3d;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2.25rem;
+      transform-style: preserve-3d;
+    }
+    .btn-primary {
+      background: #d94f4f;
+      color: #fff;
+      padding: 0.85rem 2rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 5px 12px rgb(217 79 79 / 0.4);
+      transform-style: preserve-3d;
+      user-select: none;
+    }
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background: #bb3f3f;
+      outline: none;
+      box-shadow: 0 6px 15px rgb(187 63 63 / 0.7);
+      transform-style: preserve-3d;
+    }
+
+    /* Sections */
+    section {
+      padding: 4rem 1rem;
+      transform-style: preserve-3d;
+    }
+    section h2 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #d94f4f;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      transform-style: preserve-3d;
+      user-select: none;
+    }
+    .underline {
+      width: 6rem;
+      height: 4px;
+      background: #d94f4f;
+      margin: 0.5rem auto 3rem;
+      border-radius: 4px;
+      transform-style: preserve-3d;
+    }
+
+    /* Menu Section */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+      gap: 1.75rem;
+      max-width: 900px;
+      margin: 0 auto;
+      transform-style: preserve-3d;
+      perspective: 800px;
+    }
+    .menu-item {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgb(0 0 0 / 0.1);
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      will-change: transform;
+      backface-visibility: hidden;
+      user-select: none;
+      perspective: 1000px;
+      /* For the 3d tilt */
+      transform-origin: center center;
+    }
+    .menu-item:hover,
+    .menu-item:focus-within {
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+    }
+    .menu-item img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      transition: transform 0.3s ease;
+      will-change: transform;
+    }
+    .menu-item-content {
+      padding: 1rem 1.25rem 1.5rem;
+      transform-style: preserve-3d;
+    }
+    .menu-item-content h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.25rem;
+      color: #d94f4f;
+    }
+    .menu-item-content p {
+      font-size: 0.9rem;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+      color: #555;
+    }
+    .menu-item-content span {
+      font-weight: 700;
+      color: #d94f4f;
+      font-size: 1.1rem;
+    }
+
+    /* About Section */
+    .about-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+      transform-style: preserve-3d;
+    }
+    .about-img {
+      flex: 1 1 300px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgb(217 79 79 / 0.3);
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      transition: transform 0.3s ease;
+    }
+    .about-img img {
+      display: block;
+      width: 100%;
+      height: auto;
+      pointer-events: none;
+      user-select: none;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+    .about-text {
+      flex: 1 1 350px;
+      font-size: 1.1rem;
+      color: #555;
+      line-height: 1.6;
+      text-align: justify;
+      transform-style: preserve-3d;
+      user-select: text;
+    }
+
+    /* Contact Section */
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 7px 22px rgb(217 79 79 / 0.15);
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+    .form-group {
+      margin-bottom: 1.6rem;
+      transform-style: preserve-3d;
+    }
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: #d94f4f;
+      user-select: none;
+    }
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.3s ease;
+      resize: vertical;
+      user-select: text;
+      transform-style: preserve-3d;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus {
+      border-color: #d94f4f;
+      outline: none;
+      box-shadow: 0 0 6px rgb(217 79 79 / 0.5);
+    }
+    textarea {
+      min-height: 100px;
+    }
+    .btn-submit {
+      background: #d94f4f;
+      color: #fff;
+      padding: 0.85rem 2rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      box-shadow: 0 5px 12px rgb(217 79 79 / 0.4);
+      user-select: none;
+      transform-style: preserve-3d;
+    }
+    .btn-submit:hover,
+    .btn-submit:focus {
+      background: #bb3f3f;
+      outline: none;
+      box-shadow: 0 6px 15px rgb(187 63 63 / 0.7);
+    }
+    .form-message {
+      margin-top: 1rem;
+      font-weight: 700;
+      font-size: 1rem;
+      color: green;
+      text-align: center;
+    }
+    .error-message {
+      color: #bb3f3f;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      background: #d94f4f;
+      color: #fff;
+      text-align: center;
+      padding: 1.25rem 1rem;
+      font-weight: 600;
+      user-select: none;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .about-container {
+        flex-direction: column;
+        padding: 0 0;
+      }
+
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 480px) {
+      .nav-container {
+        padding: 0 0.75rem;
+      }
+      nav ul {
+        display: none;
+        flex-direction: column;
+        background: #b43e3e;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 180px;
+        border-radius: 0 0 0 12px;
+        box-shadow: 0 7px 15px rgba(0,0,0,0.15);
+        user-select: none;
+      }
+      nav ul.active {
+        display: flex;
+      }
+      nav ul li {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255 255 255 / 0.2);
+      }
+      nav ul li:last-child {
+        border-bottom: none;
+      }
+      nav ul li a {
+        color: #fff;
+        font-weight: 700;
+        font-size: 1rem;
+      }
+      .menu-toggle {
+        display: flex;
+        transform-style: preserve-3d;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <script>
+    (function() {
+      const { useState, useEffect, useRef } = React;
+
+      // Data for menu
+      const menuItems = [
+        {
+          id: 1,
+          name: 'Classic Margherita Pizza',
+          description: 'Fresh tomatoes, mozzarella cheese, basil, and olive oil on crispy thin crust.',
+          price: '$12.99',
+          image: 'https://images.unsplash.com/photo-1601924582970-2a2ddc575626?auto=format&fit=crop&w=800&q=80',
+        },
+        {
+          id: 2,
+          name: 'Spaghetti Carbonara',
+          description: 'Traditional Italian pasta with pancetta, egg, parmesan, and black pepper.',
+          price: '$14.50',
+          image: 'https://images.unsplash.com/photo-1562967916-eb82221dfb27?auto=format&fit=crop&w=800&q=80',
+        },
+        {
+          id: 3,
+          name: 'Grilled Salmon with Veggies',
+          description: 'Perfectly grilled salmon served with seasonal vegetables and lemon butter sauce.',
+          price: '$19.99',
+          image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80',
+        },
+        {
+          id: 4,
+          name: 'Caesar Salad',
+          description: 'Crisp Romaine lettuce with Caesar dressing, croutons, and parmesan cheese.',
+          price: '$9.99',
+          image: 'https://images.unsplash.com/photo-1559622216-8e83fd23f8b0?auto=format&fit=crop&w=800&q=80',
+        },
+        {
+          id: 5,
+          name: 'Chocolate Lava Cake',
+          description: 'Warm chocolate cake with a gooey molten center, served with vanilla ice cream.',
+          price: '$7.50',
+          image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=800&q=80',
+        },
+      ];
+
+      // Navbar with mobile menu toggle
+      function Navbar() {
+        const [menuActive, setMenuActive] = useState(false);
+        const toggleMenu = () => setMenuActive(!menuActive);
+        const handleLinkClick = () => setMenuActive(false);
+
+        return React.createElement(
+          "header",
+          null,
+          React.createElement(
+            "div",
+            { className: "nav-container", role: "navigation", "aria-label": "Main navigation" },
+            React.createElement("div", { className: "logo", tabIndex: "0" }, "Delicious Bites"),
+            React.createElement(
+              "nav",
+              null,
+              React.createElement(
+                "ul",
+                { className: menuActive ? "active" : "" },
+                React.createElement("li", null, React.createElement("a", { href: "#hero", onClick: handleLinkClick }, "Home")),
+                React.createElement("li", null, React.createElement("a", { href: "#menu", onClick: handleLinkClick }, "Menu")),
+                React.createElement("li", null, React.createElement("a", { href: "#about", onClick: handleLinkClick }, "About")),
+                React.createElement("li", null, React.createElement("a", { href: "#contact", onClick: handleLinkClick }, "Contact"))
+              ),
+              React.createElement(
+                "button",
+                {
+                  "aria-label": "Toggle menu",
+                  className: "menu-toggle",
+                  onClick: toggleMenu,
+                  "aria-expanded": menuActive
+                },
+                React.createElement("span", null),
+                React.createElement("span", null),
+                React.createElement("span", null)
+              )
+            )
+          )
+        );
+      }
+
+      // Hero with parallax 3D effect on mouse move
+      function Hero() {
+        const heroBgRef = useRef(null);
+
+        useEffect(() => {
+          function onMouseMove(e) {
+            if (!heroBgRef.current) return;
+            const rect = heroBgRef.current.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Calculate rotate values between -10 and 10 degrees:
+            const rotateX = ((y / rect.height) - 0.5) * 20; // 20 degree range
+            const rotateY = ((x / rect.width) - 0.5) * 20;
+
+            heroBgRef.current.style.transform = `translateZ(0) rotateX(${-rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+          }
+          function onMouseLeave() {
+            if (!heroBgRef.current) return;
+            heroBgRef.current.style.transform = 'translateZ(0) rotateX(0) rotateY(0) scale(1)';
+          }
+
+          const el = heroBgRef.current;
+          if (el) {
+            el.addEventListener('mousemove', onMouseMove);
+            el.addEventListener('mouseleave', onMouseLeave);
+          }
+
+          // Cleanup
+          return () => {
+            if (el) {
+              el.removeEventListener('mousemove', onMouseMove);
+              el.removeEventListener('mouseleave', onMouseLeave);
+            }
+          };
+        }, []);
+
+        return React.createElement(
+          "section",
+          { id: "hero", className: "hero", role: "img", "aria-label": "Delicious food background banner" },
+          React.createElement("div", { className: "hero-bg", ref: heroBgRef }),
+          React.createElement(
+            "div",
+            { className: "hero-content" },
+            React.createElement("h1", null, "Experience Taste Like Never Before"),
+            React.createElement("p", null, "Discover our mouth-watering dishes crafted with fresh ingredients and passion."),
+            React.createElement("a", { href: "#menu", className: "btn-primary" }, "Explore Menu")
+          )
+        );
+      }
+
+      // Menu with 3D tilt effect on hover and mouse move
+      function Menu() {
+        const cardRefs = useRef([]);
+
+        useEffect(() => {
+          function handleMouseMove(e) {
+            const card = e.currentTarget;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const maxRotate = 15; // degrees
+
+            const rotateX = ((y - centerY) / centerY) * maxRotate;
+            const rotateY = ((x - centerX) / centerX) * maxRotate;
+
+            card.style.transform = `perspective(800px) rotateX(${-rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+          }
+          function handleMouseLeave(e) {
+            e.currentTarget.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
+          }
+
+          cardRefs.current.forEach(card => {
+            if (card) {
+              card.addEventListener('mousemove', handleMouseMove);
+              card.addEventListener('mouseleave', handleMouseLeave);
+            }
+          });
+
+          return () => {
+            cardRefs.current.forEach(card => {
+              if (card) {
+                card.removeEventListener('mousemove', handleMouseMove);
+                card.removeEventListener('mouseleave', handleMouseLeave);
+              }
+            });
+          };
+        }, []);
+
+        return React.createElement(
+          "section",
+          { id: "menu", "aria-labelledby": "menu-title" },
+          React.createElement("h2", { id: "menu-title" }, "Our Menu"),
+          React.createElement("div", { className: "underline" }),
+          React.createElement(
+            "div",
+            { className: "menu-grid" },
+            menuItems.map((item, i) =>
+              React.createElement(
+                "article",
+                {
+                  key: item.id,
+                  className: "menu-item",
+                  tabIndex: "0",
+                  "aria-label": `${item.name}, price ${item.price}`,
+                  ref: el => (cardRefs.current[i] = el)
+                },
+                React.createElement("img", { src: item.image, alt: item.name }),
+                React.createElement(
+                  "div",
+                  { className: "menu-item-content" },
+                  React.createElement("h3", null, item.name),
+                  React.createElement("p", null, item.description),
+                  React.createElement("span", null, item.price)
+                )
+              )
+            )
+          )
+        );
+      }
+
+      // About section
+      function About() {
+        return React.createElement(
+          "section",
+          { id: "about", "aria-labelledby": "about-title" },
+          React.createElement("h2", { id: "about-title" }, "About Us"),
+          React.createElement("div", { className: "underline" }),
+          React.createElement(
+            "div",
+            { className: "about-container" },
+            React.createElement(
+              "div",
+              { className: "about-img", "aria-hidden": "true" },
+              React.createElement("img", {
+                src: "https://images.unsplash.com/photo-1541542684-17b7e3cc5918?auto=format&fit=crop&w=768&q=80",
+                alt: "Restaurant interior"
+              })
+            ),
+            React.createElement(
+              "p",
+              { className: "about-text" },
+              "At Delicious Bites, we believe food is not just sustenance, but an experience to savor. Our expert chefs craft exquisite dishes from the freshest local ingredients, combining tradition with innovation. Whether you're craving classic comfort food or daring culinary masterpieces, we provide a warm ambiance perfect for family dinners, romantic dates, or special occasions."
+            )
+          )
+        );
+      }
+
+      // Contact form with validation
+      function Contact() {
+        const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+        const [formStatus, setFormStatus] = useState({ success: '', error: '' });
+
+        const handleChange = e => {
+          const { name, value } = e.target;
+          setFormData(prev => ({ ...prev, [name]: value }));
+          setFormStatus({ success: '', error: '' });
+        };
+
+        const validateEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+        const handleSubmit = e => {
+          e.preventDefault();
+          if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+            setFormStatus({ success: '', error: 'Please fill in all fields.' });
+            return;
+          }
+          if (!validateEmail(formData.email)) {
+            setFormStatus({ success: '', error: 'Please enter a valid email address.' });
+            return;
+          }
+          setFormStatus({ success: 'Thank you for contacting us! We will get back to you soon.', error: '' });
+          setFormData({ name: '', email: '', message: '' });
+        };
+
+        return React.createElement(
+          "section",
+          { id: "contact", "aria-labelledby": "contact-title" },
+          React.createElement("h2", { id: "contact-title" }, "Contact Us"),
+          React.createElement("div", { className: "underline" }),
+          React.createElement(
+            "form",
+            { className: "contact-form", onSubmit: handleSubmit, noValidate: true },
+            React.createElement(
+              "div",
+              { className: "form-group" },
+              React.createElement(
+                "label",
+                { htmlFor: "name" },
+                "Name"
+              ),
+              React.createElement("input", {
+                type: "text",
+                id: "name",
+                name: "name",
+                value: formData.name,
+                onChange: handleChange,
+                required: true,
+                "aria-required": "true"
+              })
+            ),
+            React.createElement(
+              "div",
+              { className: "form-group" },
+              React.createElement(
+                "label",
+                { htmlFor: "email" },
+                "Email"
+              ),
+              React.createElement("input", {
+                type: "email",
+                id: "email",
+                name: "email",
+                value: formData.email,
+                onChange: handleChange,
+                required: true,
+                "aria-required": "true"
+              })
+            ),
+            React.createElement(
+              "div",
+              { className: "form-group" },
+              React.createElement(
+                "label",
+                { htmlFor: "message" },
+                "Message"
+              ),
+              React.createElement("textarea", {
+                id: "message",
+                name: "message",
+                value: formData.message,
+                onChange: handleChange,
+                required: true,
+                "aria-required": "true"
+              })
+            ),
+            React.createElement("button", { type: "submit", className: "btn-submit" }, "Send Message"),
+            formStatus.success && React.createElement("div", { className: "form-message", role: "alert" }, formStatus.success),
+            formStatus.error && React.createElement("div", { className: "error-message", role: "alert" }, formStatus.error)
+          )
+        );
+      }
+
+      // Footer
+      function Footer() {
+        return React.createElement(
+          "footer",
+          null,
+          `© ${new Date().getFullYear()} Delicious Bites. All rights reserved.`
+        );
+      }
+
+      // Main app
+      function App() {
+        return React.createElement(
+          React.Fragment,
+          null,
+          React.createElement(Navbar, null),
+          React.createElement(
+            "main",
+            null,
+            React.createElement(Hero, null),
+            React.createElement(Menu, null),
+            React.createElement(About, null),
+            React.createElement(Contact, null)
+          ),
+          React.createElement(Footer, null)
+        );
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(App));
+      });
+    })();
+  </script>
+</body>
+</html>
+
